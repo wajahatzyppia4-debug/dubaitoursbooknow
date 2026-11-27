@@ -74,8 +74,9 @@ const config = {
     var c = window.__siteTracking || {};
     var data = Object.assign({ lead_type: type, page_path: location.pathname }, extra || {});
     window.dataLayer.push(Object.assign({ event: type === 'form' ? 'generate_lead' : 'lead_click' }, data));
-    if (c.ga4Id) gtag('event', type === 'form' ? 'generate_lead' : 'contact_click', { method: type, page_path: location.pathname });
-    if (c.googleAdsId && c.googleAdsLeadLabel) gtag('event', 'conversion', { send_to: c.googleAdsId + '/' + c.googleAdsLeadLabel });
+    var money = data.value ? { value: data.value, currency: data.currency || 'AED' } : {};
+    if (c.ga4Id) gtag('event', type === 'form' ? 'generate_lead' : 'contact_click', Object.assign({ method: type, page_path: location.pathname }, money));
+    if (c.googleAdsId && c.googleAdsLeadLabel) gtag('event', 'conversion', Object.assign({ send_to: c.googleAdsId + '/' + c.googleAdsLeadLabel }, money));
     if (window.fbq) fbq('track', type === 'form' ? 'Lead' : 'Contact', { method: type });
     if (window.ttq) ttq.track(type === 'form' ? 'SubmitForm' : 'Contact', { method: type });
   };
@@ -84,7 +85,11 @@ const config = {
     if (!a) return;
     var h = a.getAttribute('href') || '';
     var type = /wa\.me|whatsapp\.com/.test(h) ? 'whatsapp' : h.indexOf('tel:') === 0 ? 'call' : h.indexOf('mailto:') === 0 ? 'email' : '';
-    if (type) window.trackLead(type, { link_location: a.dataset.loc || '' });
+    if (!type) return;
+    var extra = { link_location: a.dataset.loc || '' };
+    if (a.dataset.tour) extra.tour_name = a.dataset.tour;
+    if (a.dataset.value) { extra.value = Number(a.dataset.value); extra.currency = 'AED'; }
+    window.trackLead(type, extra);
   }, true);
   // Remember where the visitor came from (ads, Google, social) to attach to form leads.
   try {

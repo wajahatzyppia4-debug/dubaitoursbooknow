@@ -12,43 +12,39 @@
 export const site = {
   // ---- Basics ------------------------------------------------
   /** Live web address, with https:// and NO slash at the end. */
-  url: 'https://www.example.com',
-  name: 'Example Equipment Rental',
-  /** Shown after page titles: "Crane Rental Dubai | Example Equipment Rental" */
-  titleSuffix: 'Example Equipment Rental',
-  tagline: 'Heavy equipment rental across Dubai and the UAE',
+  url: 'https://dubaitoursbooknow.com',
+  // PLACEHOLDER: confirm the business name with the owner.
+  name: 'Dubai Tours Book Now',
+  /** Shown after page titles: "Desert Safari Dubai | Dubai Tours Book Now" */
+  titleSuffix: 'Dubai Tours Book Now',
+  tagline: 'Desert safaris and private tours in Dubai, booked direct',
   description:
-    'Rent cranes, forklifts, excavators and access equipment in Dubai with fast delivery, certified operators and flexible daily, weekly and monthly rates.',
+    'Book a Dubai desert safari from AED 110 with free hotel pickup, dune bashing, camel ride, BBQ dinner and live shows. Private 4x4 and city tours too.',
   /** Page language, e.g. 'en', 'ar', 'en-GB'. */
   lang: 'en',
   /** Open Graph locale, e.g. en_US, en_GB, ar_AE. */
   ogLocale: 'en_US',
 
   // ---- Business details (used in Schema and the footer) ------
-  /**
-   * Schema.org business type. Pick the closest one from
-   * https://schema.org/LocalBusiness (see "More specific Types"), e.g.
-   * 'LocalBusiness', 'HomeAndConstructionBusiness', 'AutomotiveBusiness',
-   * 'Dentist', 'LegalService', 'MovingCompany', 'Plumber', 'Electrician'.
-   * When unsure, keep 'LocalBusiness'.
-   */
-  businessType: 'LocalBusiness',
+  /** Schema.org business type: a tour operator is a TravelAgency. */
+  businessType: 'TravelAgency',
+  // PLACEHOLDER phone and WhatsApp: replace with the real numbers.
   phone: '+971 50 000 0000',
   /** Same phone, digits only with +, used for click-to-call. */
   phoneRaw: '+971500000000',
   /** WhatsApp number, digits only, country code first, no +. '' hides WhatsApp. */
   whatsapp: '971500000000',
-  whatsappMessage: 'Hi, I would like a quote.',
-  email: 'info@example.com',
+  whatsappMessage: 'Hi, I would like to book a desert safari. Please share availability.',
+  email: '',
   address: {
-    street: 'Al Quoz Industrial Area 3',
+    street: 'Dubai',
     city: 'Dubai',
     region: 'Dubai',
     postalCode: '',
     country: 'AE',
   },
   /** Map pin. Right-click your location in Google Maps to copy these. */
-  geo: { lat: 25.1264, lng: 55.2281 },
+  geo: { lat: 25.2048, lng: 55.2708 },
   /** Google Maps link to your Business Profile ('' to hide). */
   mapsUrl: '',
   openingHours: [
@@ -58,15 +54,15 @@ export const site = {
       closes: '23:59',
     },
   ],
-  priceRange: '$$',
+  priceRange: 'AED 110 - AED 1610',
   /** Cities or regions you serve (used in Schema areaServed). */
   areaServed: ['Dubai', 'Sharjah', 'Abu Dhabi'],
   foundingYear: '',
 
   // ---- Brand -------------------------------------------------
   brand: {
-    primary: '#14213D', // dark colour: header, footer, headings
-    accent: '#FCA311', // highlight colour: buttons and links
+    primary: '#3A1F0F', // dark colour: header, footer, headings
+    accent: '#F5A623', // highlight colour: buttons and links
   },
   /** Files inside the /public folder. */
   logo: '/images/logo.svg',
@@ -122,37 +118,49 @@ export const site = {
   form: {
     endpoint: '',
     accessKey: '',
-    subject: 'New website enquiry',
+    subject: 'New tour booking request - dubaitoursbooknow.com',
   },
 
   // ---- Menu --------------------------------------------------
   nav: [
-    { label: 'Services', href: '/#services' },
-    { label: 'Areas', href: '/#areas' },
-    { label: 'Blog', href: '/blog/' },
-    { label: 'About', href: '/about/' },
+    { label: 'Safari packages', href: '/#packages' },
+    { label: 'Private safari', href: '/#private' },
+    { label: 'City tours', href: '/#city-tours' },
+    { label: 'FAQ', href: '/#faq' },
     { label: 'Contact', href: '/contact/' },
   ],
 
-  // ---- Homepage ----------------------------------------------
+  // ---- Homepage (the Google Ads landing page) ----------------
   home: {
-    seoTitle: 'Equipment Rental Dubai | Cranes, Forklifts & Excavators',
-    h1: 'Equipment Rental in Dubai, Delivered Fast',
+    seoTitle: 'Desert Safari Dubai Booking | From AED 110 with Pickup',
+    h1: 'Desert Safari Dubai: Book Now from AED 110',
     intro:
-      'Cranes, forklifts, excavators and access platforms for rent across Dubai, Sharjah and Abu Dhabi. Certified operators, same-day delivery and clear daily, weekly and monthly rates.',
-    trustPoints: ['Same-day delivery', 'Certified operators', '24/7 support', 'Fully insured fleet'],
+      'Dune bashing in a 4x4 Land Cruiser, a camel ride, sandboarding, a sunset photo stop and a BBQ dinner with live shows at our desert camp. Free pickup and drop-off from any hotel or home in Dubai.',
+    trustPoints: ['Free hotel pickup', 'Pay on the day', 'No hidden charges', 'WhatsApp reply in minutes'],
     faqs: [
       {
-        q: 'How quickly can you deliver equipment in Dubai?',
-        a: 'Most machines can be delivered the same day or the next morning anywhere in Dubai, depending on availability and site access.',
+        q: 'How much is a desert safari in Dubai?',
+        a: 'Our shared evening desert safari is AED 110 per person, including pickup, dune bashing, camel ride, sandboarding, BBQ dinner and live shows. Adding a quad bike ride makes it AED 180, the VIP version with quad bike is AED 285, and a private Land Cruiser for your own group starts at AED 610 per vehicle.',
       },
       {
-        q: 'Do you rent equipment with an operator?',
-        a: 'Yes. Every machine can be rented with a certified operator, or without one for clients who have their own licensed staff.',
+        q: 'What time is pickup and how long does the safari last?',
+        a: 'Pickup for the evening safari starts around 2:15 PM to 3:00 PM depending on your area, and you are back at your hotel at about 9:30 PM. The whole trip takes roughly six hours, including about 45 minutes of dune bashing and three hours at the camp.',
       },
       {
-        q: 'What rental periods do you offer?',
-        a: 'Daily, weekly and monthly rentals. Longer rentals get lower rates, so ask for a monthly quote for projects over three weeks.',
+        q: 'Is hotel pickup really free?',
+        a: 'Yes. Pickup and drop-off from any hotel, apartment or villa in Dubai is included in every safari and city tour price. Pickup from Sharjah or Abu Dhabi can be arranged for a small extra charge; ask us on WhatsApp.',
+      },
+      {
+        q: 'Do I need to pay in advance?',
+        a: 'No. You reserve your seats for free on WhatsApp, by phone or through the booking form, and pay in cash or by card on the day of the tour.',
+      },
+      {
+        q: 'Is the desert safari suitable for children and older guests?',
+        a: 'Yes. Our drivers are licensed desert drivers and can keep the dune drive gentle for families. Let us know if you are travelling with young children, older guests or anyone who is pregnant or has back problems, and we can skip or soften the dune bashing.',
+      },
+      {
+        q: 'Are private and city tour prices per person or per car?',
+        a: 'Per vehicle. A private safari or city tour price covers the whole Land Cruiser or car for your group, up to the number of guests shown on the package, so larger groups pay less per person.',
       },
     ],
   },

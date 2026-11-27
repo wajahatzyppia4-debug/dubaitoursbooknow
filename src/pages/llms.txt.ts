@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { site } from '../config/site';
+import { aed, allBookable } from '../config/packages';
 
 /** llms.txt: a plain summary of the site for AI assistants (ChatGPT, Perplexity, Claude). */
 export const GET: APIRoute = async () => {
@@ -14,6 +15,9 @@ export const GET: APIRoute = async () => {
     `> ${site.description}`,
     '',
     `Phone: ${site.phone}${site.email ? ` · Email: ${site.email}` : ''} · Location: ${site.address.city}, ${site.address.country}`,
+    '',
+    '## Tours and prices (AED)',
+    ...allBookable.map((b) => `- ${b.name}: ${aed(b.price)} ${b.unit}`),
     '',
     '## Services',
     ...services.sort((a, b) => a.data.order - b.data.order).map((s) => line(`/${s.id}/`, s.data.name, s.data.description)),

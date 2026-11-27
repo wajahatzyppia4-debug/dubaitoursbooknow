@@ -7,7 +7,7 @@ const a = site.address;
 ---
 <BaseLayout
   title={`Contact ${site.name}`}
-  description={`Call ${site.phone}, WhatsApp or send a quote request to ${site.name}. Fast replies for customers in ${site.areaServed.join(', ')}.`}
+  description={`Call ${site.phone}, WhatsApp or send a booking request to ${site.name}. Desert safari and private tour bookings for guests in ${site.areaServed.join(', ')}.`}
   pageType="ContactPage"
   breadcrumbs={[{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact/' }]}
 >
@@ -15,11 +15,11 @@ const a = site.address;
     <div class="wrap content-grid">
       <div class="prose">
         <h1>Contact us</h1>
-        <p>Tell us what you need and where. We usually reply within the hour.</p>
+        <p>Tell us your tour, date and number of guests. We reply on WhatsApp within minutes, 7 days a week.</p>
         <p><strong>Phone:</strong> <a href={`tel:${site.phoneRaw}`} data-loc="contact">{site.phone}</a></p>
         {site.whatsapp && <p><strong>WhatsApp:</strong> <a href={whatsappUrl()} target="_blank" rel="noopener" data-loc="contact">Chat with us</a></p>}
         {site.email && <p><strong>Email:</strong> <a href={`mailto:${site.email}`} data-loc="contact">{site.email}</a></p>}
-        <p><strong>Address:</strong> {a.street}, {a.city}</p>
+        <p><strong>Based in:</strong> {a.city}, United Arab Emirates. Free pickup from any hotel or home in Dubai.</p>
         {site.mapsUrl && <p><a href={site.mapsUrl} target="_blank" rel="noopener">Open in Google Maps</a></p>}
       </div>
       <LeadForm />
