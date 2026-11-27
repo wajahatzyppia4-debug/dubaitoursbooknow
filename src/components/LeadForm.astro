@@ -1,31 +1,38 @@
 ---
 /**
- * Quote form. Sends to the form service set in site.ts (Web3Forms, Formspree...).
- * With no service set, it opens WhatsApp with the visitor's details typed in.
- * Every submission is tracked as a lead (GA4 generate_lead, Ads conversion, pixels).
+ * Booking request form. Sends to the form service set in site.ts (Web3Forms, Formspree...).
+ * With no service set, it opens WhatsApp with the visitor's booking details typed in.
+ * Every submission is tracked as a lead (dataLayer generate_lead, GA4, Ads conversion, pixels).
  */
-import { getCollection } from 'astro:content';
 import { site } from '../config/site';
+import { aed, allBookable } from '../config/packages';
 interface Props { heading?: string; preselect?: string }
-const { heading = 'Get a free quote', preselect = '' } = Astro.props;
-const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+const { heading = 'Book your tour in 2 minutes', preselect = '' } = Astro.props;
 const formConfig = { ...site.form, whatsapp: site.whatsapp, email: site.email };
 ---
 <form class="lead-form" id="quote" novalidate>
   <h2>{heading}</h2>
+  <p class="form-note">No payment needed now. We confirm on WhatsApp within minutes.</p>
   <label>Your name<input name="name" autocomplete="name" required /></label>
-  <label>Phone / WhatsApp<input name="phone" type="tel" autocomplete="tel" required /></label>
-  <label>Email (optional)<input name="email" type="email" autocomplete="email" /></label>
-  <label>What do you need?
-    <select name="service">
-      <option value="">Choose a service</option>
-      {services.map((s) => <option value={s.data.name} selected={s.data.name === preselect}>{s.data.name}</option>)}
-      <option value="Other">Something else</option>
+  <label>WhatsApp number<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+971..." required /></label>
+  <label>Tour
+    <select name="service" required>
+      <option value="">Choose your tour</option>
+      {allBookable.map((b) => (
+        <option value={`${b.name} - ${aed(b.price)} ${b.unit}`} data-value={b.price} selected={b.name === preselect}>
+          {b.name} · {aed(b.price)}{b.unit === 'per vehicle' ? ' / car' : ' / person'}
+        </option>
+      ))}
+      <option value="Safari + city tour combo">Safari + city tour combo (ask for price)</option>
     </select>
   </label>
-  <label>Details<textarea name="message" rows="4" placeholder="Location, dates, size of the job..."></textarea></label>
+  <div class="form-row">
+    <label>Tour date<input name="date" type="date" required /></label>
+    <label>Guests<input name="guests" type="number" min="1" max="50" value="2" inputmode="numeric" /></label>
+  </div>
+  <label>Pickup hotel or area<input name="pickup" placeholder="e.g. Marina, Downtown, hotel name" /></label>
   <input type="text" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-  <button class="btn btn-accent" type="submit">Send request</button>
+  <button class="btn btn-accent btn-block" type="submit">Send booking request</button>
   <p class="form-status" role="status" aria-live="polite"></p>
 </form>
 
@@ -35,20 +42,24 @@ const formConfig = { ...site.form, whatsapp: site.whatsapp, email: site.email };
     while (form && form.tagName !== 'FORM') form = form.previousElementSibling;
     if (!form) return;
     var status = form.querySelector('.form-status');
+    var dateInput = form.querySelector('input[name="date"]');
+    if (dateInput) dateInput.min = new Date().toISOString().slice(0, 10);
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var d = Object.fromEntries(new FormData(form).entries());
       if (d.botcheck) return;
-      if (!d.name || !d.phone) { status.textContent = 'Please add your name and phone number.'; return; }
+      if (!d.name || !d.phone || !d.service) { status.textContent = 'Please add your name, WhatsApp number and tour.'; return; }
       var source = {};
       try { source = JSON.parse(sessionStorage.getItem('lead_source') || '{}'); source.landing_page = sessionStorage.getItem('landing_page') || ''; } catch (err) {}
-      if (window.trackLead) window.trackLead('form', { service: d.service || '' });
+      var opt = form.querySelector('select[name="service"]').selectedOptions[0];
+      var value = opt && opt.dataset.value ? Number(opt.dataset.value) : 0;
+      if (window.trackLead) window.trackLead('form', { service: d.service || '', value: value, currency: 'AED' });
 
+      var text = 'Hi, I would like to book.\nName: ' + d.name + '\nWhatsApp: ' + d.phone + '\nTour: ' + d.service +
+        (d.date ? '\nDate: ' + d.date : '') + (d.guests ? '\nGuests: ' + d.guests : '') + (d.pickup ? '\nPickup: ' + d.pickup : '');
       if (!cfg.endpoint) {
-        var text = 'Hi, I would like a quote.\nName: ' + d.name + '\nPhone: ' + d.phone +
-          (d.service ? '\nService: ' + d.service : '') + (d.message ? '\nDetails: ' + d.message : '');
         if (cfg.whatsapp) { window.location.href = 'https://wa.me/' + cfg.whatsapp + '?text=' + encodeURIComponent(text); }
-        else { window.location.href = 'mailto:' + cfg.email + '?subject=Quote request&body=' + encodeURIComponent(text); }
+        else if (cfg.email) { window.location.href = 'mailto:' + cfg.email + '?subject=Booking request&body=' + encodeURIComponent(text); }
         return;
       }
       var body = Object.assign({}, d, source, { page: location.href, subject: cfg.subject });

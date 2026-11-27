@@ -1,5 +1,5 @@
 {
-  "name": "site-template",
+  "name": "dubaitoursbooknow",
   "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wajahatzyppia4-debug/site-template.git"
+    "url": "git+https://github.com/wajahatzyppia4-debug/dubaitoursbooknow.git"
   },
   "bugs": {
-    "url": "https://github.com/wajahatzyppia4-debug/site-template/issues"
+    "url": "https://github.com/wajahatzyppia4-debug/dubaitoursbooknow/issues"
   },
-  "homepage": "https://github.com/wajahatzyppia4-debug/site-template#readme",
+  "homepage": "https://github.com/wajahatzyppia4-debug/dubaitoursbooknow#readme",
   "dependencies": {
     "@astrojs/sitemap": "^3.7.6",
     "astro": "^7.4.13"

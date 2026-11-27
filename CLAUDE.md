@@ -1,6 +1,8 @@
 # Instructions for Claude
 
-This repo is a master template for static, SEO-first business websites (Astro).
+This repo is the website for dubaitoursbooknow.com (desert safari and Dubai tours, a Google Ads
+landing page), built from the master site template (static, SEO-first, Astro).
+Tour packages and prices live in `src/config/packages.ts`; the landing page is `src/pages/index.astro`.
 The owner has no coding knowledge: explain things in plain language, avoid jargon,
 and do the technical work yourself.
 

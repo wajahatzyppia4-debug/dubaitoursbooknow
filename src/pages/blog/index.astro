@@ -9,9 +9,10 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
 <BaseLayout
   title={`Blog and Guides | ${site.name}`}
   exactTitle
-  description={`Practical guides, price tips and comparisons from ${site.name} to help you plan your next project.`}
+  description={`Practical guides, price tips and comparisons from ${site.name} to help you plan your Dubai trip.`}
   pageType="CollectionPage"
   breadcrumbs={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog/' }]}
+  noindex={posts.length === 0}
 >
   <section class="section">
     <div class="wrap narrow">

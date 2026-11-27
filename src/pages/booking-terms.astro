@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+---
+<BaseLayout
+  title="Booking and Cancellation Policy"
+  description={`How booking, payment, pickup times, cancellations and refunds work for desert safaris and city tours booked with ${site.name}.`}
+  breadcrumbs={[{ name: 'Home', path: '/' }, { name: 'Booking and cancellation', path: '/booking-terms/' }]}
+>
+  <section class="section">
+    <div class="wrap prose legal">
+      <h1>Booking and cancellation policy</h1>
+      <h2>Reserving your tour</h2>
+      <p>You can reserve by WhatsApp, phone or our booking form. A booking is confirmed once we send you a confirmation message with your pickup time. No advance payment is needed.</p>
+      <h2>Payment</h2>
+      <p>You pay on the day of the tour, in cash (AED) or by card. Prices shown on our website are in UAE dirhams and include pickup, drop-off and everything listed in the package.</p>
+      <h2>Pickup</h2>
+      <p>We send your pickup time the day before. Pickup times are a window of about 30 minutes because of Dubai traffic. Please be ready in your hotel lobby or at your building entrance; the driver can wait up to 10 minutes.</p>
+      <h2>Cancellations and changes</h2>
+      <ul>
+        <li>Free cancellation or date change up to 24 hours before pickup.</li>
+        <li>If you cancel less than 24 hours before pickup, or are not at the pickup point, we may ask for the full tour price.</li>
+        <li>If we cancel because of weather or safety reasons, you can move to another date or cancel at no cost.</li>
+      </ul>
+      <h2>Health and safety</h2>
+      <p>Dune bashing is not suitable for pregnant guests, babies under 3 years, or guests with back, neck or heart conditions. Please tell us in advance and we will arrange a trip without dune bashing. Children must be with an adult at all times.</p>
+      <h2>Questions</h2>
+      <p>Call <a href={`tel:${site.phoneRaw}`} data-loc="terms">{site.phone}</a> or message us on WhatsApp.</p>
+    </div>
+  </section>
+</BaseLayout>
