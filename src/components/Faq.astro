@@ -1,0 +1,18 @@
+---
+/** FAQ list. Works without JavaScript; the matching FAQPage Schema is added by the page. */
+interface Props { faqs: readonly { q: string; a: string }[]; heading?: string }
+const { faqs, heading = 'Frequently asked questions' } = Astro.props;
+---
+{faqs.length > 0 && (
+  <section class="section faq" aria-labelledby="faq-heading">
+    <div class="wrap narrow">
+      <h2 id="faq-heading">{heading}</h2>
+      {faqs.map((f, i) => (
+        <details open={i === 0}>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+)}

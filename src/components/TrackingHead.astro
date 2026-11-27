@@ -1,0 +1,96 @@
+---
+/**
+ * All tracking codes. Each one only loads when its ID is filled in
+ * src/config/site.ts, so an empty template sends nothing anywhere.
+ */
+import { site } from '../config/site';
+const t = site.tracking;
+const v = site.verification;
+const usesGtag = Boolean(t.ga4Id || t.googleAdsId);
+const gtagId = t.ga4Id || t.googleAdsId;
+const config = {
+  ga4Id: t.ga4Id,
+  googleAdsId: t.googleAdsId,
+  googleAdsLeadLabel: t.googleAdsLeadLabel,
+};
+---
+{v.google && <meta name="google-site-verification" content={v.google} />}
+{v.bing && <meta name="msvalidate.01" content={v.bing} />}
+{v.yandex && <meta name="yandex-verification" content={v.yandex} />}
+{v.facebookDomain && <meta name="facebook-domain-verification" content={v.facebookDomain} />}
+
+{/* dataLayer + consent defaults must come before any tag */}
+<script is:inline define:vars={{ consentEU: t.consentModeEU, config }}>
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  window.__siteTracking = config;
+  if (consentEU) {
+    gtag('consent', 'default', {
+      ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied',
+      region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','CH','GB'],
+      wait_for_update: 500,
+    });
+  }
+</script>
+
+{t.gtmId && (
+  <script is:inline define:vars={{ id: t.gtmId }}>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',id);
+  </script>
+)}
+
+{usesGtag && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`}></script>}
+{usesGtag && (
+  <script is:inline define:vars={{ ga4: t.ga4Id, ads: t.googleAdsId }}>
+    gtag('js', new Date());
+    if (ga4) gtag('config', ga4);
+    if (ads) gtag('config', ads);
+  </script>
+)}
+
+{t.metaPixelId && (
+  <script is:inline define:vars={{ id: t.metaPixelId }}>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', id); fbq('track', 'PageView');
+  </script>
+)}
+
+{t.tiktokPixelId && (
+  <script is:inline define:vars={{ id: t.tiktokPixelId }}>
+    !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var s=d.createElement("script");s.type="text/javascript",s.async=!0,s.src=r+"?sdkid="+e+"&lib="+t;var a=d.getElementsByTagName("script")[0];a.parentNode.insertBefore(s,a)};
+    ttq.load(id); ttq.page();}(window,document,'ttq');
+  </script>
+)}
+
+{t.microsoftClarityId && (
+  <script is:inline define:vars={{ id: t.microsoftClarityId }}>
+    (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script",id);
+  </script>
+)}
+
+{/* Lead tracking: counts WhatsApp, call and email clicks everywhere on the site. */}
+<script is:inline>
+  window.trackLead = function (type, extra) {
+    var c = window.__siteTracking || {};
+    var data = Object.assign({ lead_type: type, page_path: location.pathname }, extra || {});
+    window.dataLayer.push(Object.assign({ event: type === 'form' ? 'generate_lead' : 'lead_click' }, data));
+    if (c.ga4Id) gtag('event', type === 'form' ? 'generate_lead' : 'contact_click', { method: type, page_path: location.pathname });
+    if (c.googleAdsId && c.googleAdsLeadLabel) gtag('event', 'conversion', { send_to: c.googleAdsId + '/' + c.googleAdsLeadLabel });
+    if (window.fbq) fbq('track', type === 'form' ? 'Lead' : 'Contact', { method: type });
+    if (window.ttq) ttq.track(type === 'form' ? 'SubmitForm' : 'Contact', { method: type });
+  };
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var h = a.getAttribute('href') || '';
+    var type = /wa\.me|whatsapp\.com/.test(h) ? 'whatsapp' : h.indexOf('tel:') === 0 ? 'call' : h.indexOf('mailto:') === 0 ? 'email' : '';
+    if (type) window.trackLead(type, { link_location: a.dataset.loc || '' });
+  }, true);
+  // Remember where the visitor came from (ads, Google, social) to attach to form leads.
+  try {
+    var q = new URLSearchParams(location.search), keep = {};
+    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid','ttclid'].forEach(function (k) { if (q.get(k)) keep[k] = q.get(k); });
+    if (Object.keys(keep).length) sessionStorage.setItem('lead_source', JSON.stringify(keep));
+    if (!sessionStorage.getItem('landing_page')) sessionStorage.setItem('landing_page', location.href);
+  } catch (err) {}
+</script>

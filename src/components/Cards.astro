@@ -1,0 +1,23 @@
+---
+/** Grid of links to service or area pages. */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Item { href: string; name: string; summary: string; price?: string; image?: ImageMetadata; imageAlt?: string }
+interface Props { items: Item[] }
+const { items } = Astro.props;
+---
+<ul class="cards">
+  {items.map((item) => (
+    <li class="card">
+      <a href={item.href}>
+        {item.image && <Image src={item.image} alt={item.imageAlt ?? item.name} width={480} height={300} loading="lazy" />}
+        <div class="card-body">
+          <h3>{item.name}</h3>
+          <p>{item.summary}</p>
+          {item.price && <p class="price">{item.price}</p>}
+          <span class="more">View details →</span>
+        </div>
+      </a>
+    </li>
+  ))}
+</ul>

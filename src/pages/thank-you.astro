@@ -1,0 +1,14 @@
+---
+/** Shown after a form is sent. Hidden from Google. Use this URL as a conversion page in GTM if you like. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+---
+<BaseLayout title="Thank you" description="Thanks for your request. Our team will contact you shortly with a quote." noindex>
+  <section class="section">
+    <div class="wrap narrow prose">
+      <h1>Thank you, we have your request</h1>
+      <p>Our team will contact you shortly. For anything urgent, call <a href={`tel:${site.phoneRaw}`} data-loc="thank-you">{site.phone}</a>.</p>
+      <p><a href="/">Back to the homepage</a></p>
+    </div>
+  </section>
+</BaseLayout>

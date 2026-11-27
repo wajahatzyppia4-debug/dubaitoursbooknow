@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../config/site';
+const posts = (await getCollection('blog', (e) => !e.data.draft && !e.data.noindex))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<BaseLayout
+  title={`Blog and Guides | ${site.name}`}
+  exactTitle
+  description={`Practical guides, price tips and comparisons from ${site.name} to help you plan your next project.`}
+  pageType="CollectionPage"
+  breadcrumbs={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog/' }]}
+>
+  <section class="section">
+    <div class="wrap narrow">
+      <h1>Blog and guides</h1>
+      <ul class="post-list">
+        {posts.map((p) => (
+          <li>
+            <a href={`/blog/${p.id}/`}><h2>{p.data.title}</h2></a>
+            <p class="meta"><time datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time></p>
+            <p>{p.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

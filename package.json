@@ -1,0 +1,32 @@
+{
+  "name": "site-template",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/seo-check.mjs",
+    "preview": "astro preview",
+    "seo-check": "node scripts/seo-check.mjs",
+    "check": "astro check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wajahatzyppia4-debug/site-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wajahatzyppia4-debug/site-template/issues"
+  },
+  "homepage": "https://github.com/wajahatzyppia4-debug/site-template#readme",
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.6",
+    "astro": "^7.4.13"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^6.0.3"
+  }
+}

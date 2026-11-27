@@ -1,0 +1,26 @@
+---
+import { site } from '../config/site';
+import { whatsappUrl } from '../lib/seo';
+---
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="/" class="logo" aria-label={`${site.name} home`}>
+      <img src={site.logo} alt={site.name} width="180" height="40" />
+    </a>
+    <nav aria-label="Main">
+      <ul class="nav-desktop">
+        {site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+      <details class="menu">
+        <summary aria-label="Open menu">Menu</summary>
+        <ul>
+          {site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </details>
+    </nav>
+    <div class="header-cta">
+      <a class="btn btn-ghost" href={`tel:${site.phoneRaw}`} data-loc="header">{site.phone}</a>
+      {site.whatsapp && <a class="btn btn-accent" href={whatsappUrl()} target="_blank" rel="noopener" data-loc="header">WhatsApp</a>}
+    </div>
+  </div>
+</header>

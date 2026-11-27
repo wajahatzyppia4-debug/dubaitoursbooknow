@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import { site } from '../config/site';
+import { whatsappUrl } from '../lib/seo';
+const services = (await getCollection('services', (e) => !e.data.noindex)).sort((a, b) => a.data.order - b.data.order);
+const areas = (await getCollection('areas', (e) => !e.data.noindex)).sort((a, b) => a.data.order - b.data.order);
+const a = site.address;
+const socials = Object.entries(site.social).filter(([, url]) => url);
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <p class="footer-name">{site.name}</p>
+      <p>{site.tagline}</p>
+      <address>
+        {a.street}, {a.city}{a.postalCode ? ` ${a.postalCode}` : ''}<br />
+        <a href={`tel:${site.phoneRaw}`} data-loc="footer">{site.phone}</a><br />
+        {site.email && <a href={`mailto:${site.email}`} data-loc="footer">{site.email}</a>}
+        {site.whatsapp && <><br /><a href={whatsappUrl()} target="_blank" rel="noopener" data-loc="footer">WhatsApp</a></>}
+      </address>
+      {site.mapsUrl && <p><a href={site.mapsUrl} target="_blank" rel="noopener">Find us on Google Maps</a></p>}
+    </div>
+    <div>
+      <p class="footer-head">Services</p>
+      <ul>{services.map((s) => <li><a href={`/${s.id}/`}>{s.data.name}</a></li>)}</ul>
+    </div>
+    <div>
+      <p class="footer-head">Areas we cover</p>
+      <ul>{areas.map((ar) => <li><a href={`/${ar.id}/`}>{ar.data.name}</a></li>)}</ul>
+    </div>
+    <div>
+      <p class="footer-head">Company</p>
+      <ul>
+        <li><a href="/about/">About us</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+      {socials.length > 0 && (
+        <ul class="socials">{socials.map(([name, url]) => <li><a href={url} target="_blank" rel="noopener me">{name}</a></li>)}</ul>
+      )}
+    </div>
+  </div>
+  <p class="wrap copyright">© {year} {site.name}. All rights reserved.</p>
+</footer>

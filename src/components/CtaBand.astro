@@ -1,0 +1,21 @@
+---
+import { site } from '../config/site';
+import { whatsappUrl } from '../lib/seo';
+interface Props { heading?: string; text?: string; message?: string }
+const {
+  heading = 'Need a fast quote?',
+  text = 'Send us your job details and we reply within the hour.',
+  message,
+} = Astro.props;
+---
+<section class="cta-band">
+  <div class="wrap">
+    <h2>{heading}</h2>
+    <p>{text}</p>
+    <div class="btn-row">
+      {site.whatsapp && <a class="btn btn-accent" href={whatsappUrl(message)} target="_blank" rel="noopener" data-loc="cta-band">WhatsApp us</a>}
+      <a class="btn btn-light" href={`tel:${site.phoneRaw}`} data-loc="cta-band">Call {site.phone}</a>
+      <a class="btn btn-ghost-light" href="/contact/#quote">Request a quote</a>
+    </div>
+  </div>
+</section>

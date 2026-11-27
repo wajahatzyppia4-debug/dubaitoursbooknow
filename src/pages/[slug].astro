@@ -1,0 +1,101 @@
+---
+/**
+ * Builds one page per service file and per area file, at the root of the site
+ * (e.g. /crane-rental-dubai/). The file name is the web address.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Cards from '../components/Cards.astro';
+import { site } from '../config/site';
+import { absUrl, whatsappUrl } from '../lib/seo';
+import { faqSchema, serviceSchema } from '../lib/schema';
+
+type Entry = CollectionEntry<'services'> | CollectionEntry<'areas'>;
+
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+  const areas = await getCollection('areas');
+  return [
+    ...services.map((entry) => ({ params: { slug: entry.id }, props: { entry, kind: 'service' as const } })),
+    ...areas.map((entry) => ({ params: { slug: entry.id }, props: { entry, kind: 'area' as const } })),
+  ];
+}
+
+const { entry, kind } = Astro.props as { entry: Entry; kind: 'service' | 'area' };
+const d = entry.data;
+const { Content } = await render(entry);
+const path = `/${entry.id}/`;
+
+const schema = [
+  serviceSchema({
+    path,
+    name: kind === 'service' ? d.title : `${site.name} in ${d.name}`,
+    description: d.description,
+    areas: kind === 'area' ? [d.name] : undefined,
+    image: d.image ? absUrl(d.image.src) : undefined,
+  }),
+  faqSchema(d.faqs),
+];
+
+// Related links: an area page lists services, a service page lists areas.
+const related = kind === 'area'
+  ? (await getCollection('services', (e) => !e.data.noindex)).sort((a, b) => a.data.order - b.data.order)
+  : (await getCollection('areas', (e) => !e.data.noindex)).sort((a, b) => a.data.order - b.data.order);
+const highlights = 'highlights' in d ? d.highlights : 'landmarks' in d ? d.landmarks : [];
+const price = 'price' in d ? d.price : undefined;
+const waMessage = `Hi, I need a quote for ${d.name}${kind === 'area' ? '' : ` in ${site.address.city}`}.`;
+---
+<BaseLayout
+  title={d.seoTitle ?? d.title}
+  description={d.description}
+  image={d.image}
+  imageAlt={d.imageAlt}
+  noindex={d.noindex}
+  schema={schema}
+  breadcrumbs={[{ name: 'Home', path: '/' }, { name: d.name, path }]}
+>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>{d.title}</h1>
+        <p class="lead">{d.summary}</p>
+        {price && <p><strong>{price}</strong></p>}
+        <div class="btn-row">
+          {site.whatsapp && <a class="btn btn-accent" href={whatsappUrl(waMessage)} target="_blank" rel="noopener" data-loc="hero">WhatsApp for a quote</a>}
+          <a class="btn btn-light" href={`tel:${site.phoneRaw}`} data-loc="hero">Call {site.phone}</a>
+        </div>
+      </div>
+      {d.image && <Image src={d.image} alt={d.imageAlt ?? d.title} width={720} height={450} loading="eager" fetchpriority="high" />}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap content-grid">
+      <article class="prose">
+        {highlights.length > 0 && (
+          <ul class="highlights">{highlights.map((h) => <li>{h}</li>)}</ul>
+        )}
+        <Content />
+      </article>
+      <aside><div class="sticky"><LeadForm preselect={kind === 'service' ? d.name : ''} /></div></aside>
+    </div>
+  </section>
+
+  <Faq faqs={d.faqs} />
+
+  {related.length > 0 && (
+    <section class="section soft">
+      <div class="wrap">
+        <h2>{kind === 'area' ? `Services available in ${d.name}` : 'Areas we deliver to'}</h2>
+        <Cards items={related.map((r) => ({ href: `/${r.id}/`, name: r.data.name, summary: r.data.summary }))} />
+      </div>
+    </section>
+  )}
+
+  <CtaBand message={waMessage} />
+</BaseLayout>

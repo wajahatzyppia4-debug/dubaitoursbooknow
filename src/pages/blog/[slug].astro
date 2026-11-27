@@ -1,0 +1,48 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { absUrl } from '../../lib/seo';
+import { blogPostingSchema, faqSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', (e) => !e.data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const d = post.data;
+const { Content } = await render(post);
+const path = `/blog/${post.id}/`;
+const fmt = (x: Date) => x.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<BaseLayout
+  title={d.seoTitle ?? d.title}
+  description={d.description}
+  image={d.image}
+  imageAlt={d.imageAlt}
+  noindex={d.noindex}
+  ogType="article"
+  schema={[
+    blogPostingSchema({ path, title: d.title, description: d.description, date: d.date, updated: d.updated, author: d.author, image: d.image ? absUrl(d.image.src) : undefined }),
+    faqSchema(d.faqs),
+  ]}
+  breadcrumbs={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog/' }, { name: d.title, path }]}
+>
+  <article class="section">
+    <div class="wrap narrow prose">
+      <h1>{d.title}</h1>
+      <p class="meta">
+        <time datetime={d.date.toISOString()}>{fmt(d.date)}</time>
+        {d.updated && <> · Updated <time datetime={d.updated.toISOString()}>{fmt(d.updated)}</time></>}
+        {d.author && <> · {d.author}</>}
+      </p>
+      {d.image && <Image src={d.image} alt={d.imageAlt ?? d.title} width={780} height={440} loading="eager" fetchpriority="high" />}
+      <Content />
+    </div>
+  </article>
+  <Faq faqs={d.faqs} />
+  <CtaBand />
+</BaseLayout>

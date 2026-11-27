@@ -1,0 +1,63 @@
+---
+/**
+ * Quote form. Sends to the form service set in site.ts (Web3Forms, Formspree...).
+ * With no service set, it opens WhatsApp with the visitor's details typed in.
+ * Every submission is tracked as a lead (GA4 generate_lead, Ads conversion, pixels).
+ */
+import { getCollection } from 'astro:content';
+import { site } from '../config/site';
+interface Props { heading?: string; preselect?: string }
+const { heading = 'Get a free quote', preselect = '' } = Astro.props;
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+const formConfig = { ...site.form, whatsapp: site.whatsapp, email: site.email };
+---
+<form class="lead-form" id="quote" novalidate>
+  <h2>{heading}</h2>
+  <label>Your name<input name="name" autocomplete="name" required /></label>
+  <label>Phone / WhatsApp<input name="phone" type="tel" autocomplete="tel" required /></label>
+  <label>Email (optional)<input name="email" type="email" autocomplete="email" /></label>
+  <label>What do you need?
+    <select name="service">
+      <option value="">Choose a service</option>
+      {services.map((s) => <option value={s.data.name} selected={s.data.name === preselect}>{s.data.name}</option>)}
+      <option value="Other">Something else</option>
+    </select>
+  </label>
+  <label>Details<textarea name="message" rows="4" placeholder="Location, dates, size of the job..."></textarea></label>
+  <input type="text" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <button class="btn btn-accent" type="submit">Send request</button>
+  <p class="form-status" role="status" aria-live="polite"></p>
+</form>
+
+<script is:inline define:vars={{ cfg: formConfig }}>
+  (function () {
+    var form = document.currentScript.previousElementSibling;
+    while (form && form.tagName !== 'FORM') form = form.previousElementSibling;
+    if (!form) return;
+    var status = form.querySelector('.form-status');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var d = Object.fromEntries(new FormData(form).entries());
+      if (d.botcheck) return;
+      if (!d.name || !d.phone) { status.textContent = 'Please add your name and phone number.'; return; }
+      var source = {};
+      try { source = JSON.parse(sessionStorage.getItem('lead_source') || '{}'); source.landing_page = sessionStorage.getItem('landing_page') || ''; } catch (err) {}
+      if (window.trackLead) window.trackLead('form', { service: d.service || '' });
+
+      if (!cfg.endpoint) {
+        var text = 'Hi, I would like a quote.\nName: ' + d.name + '\nPhone: ' + d.phone +
+          (d.service ? '\nService: ' + d.service : '') + (d.message ? '\nDetails: ' + d.message : '');
+        if (cfg.whatsapp) { window.location.href = 'https://wa.me/' + cfg.whatsapp + '?text=' + encodeURIComponent(text); }
+        else { window.location.href = 'mailto:' + cfg.email + '?subject=Quote request&body=' + encodeURIComponent(text); }
+        return;
+      }
+      var body = Object.assign({}, d, source, { page: location.href, subject: cfg.subject });
+      delete body.botcheck;
+      if (cfg.accessKey) body.access_key = cfg.accessKey;
+      status.textContent = 'Sending...';
+      fetch(cfg.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) })
+        .then(function (r) { if (!r.ok) throw new Error(); window.location.href = '/thank-you/'; })
+        .catch(function () { status.textContent = 'Sorry, that did not go through. Please call or WhatsApp us instead.'; });
+    });
+  })();
+</script>

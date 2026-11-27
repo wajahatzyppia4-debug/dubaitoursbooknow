@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site } from '../config/site';
+import { whatsappUrl } from '../lib/seo';
+const a = site.address;
+---
+<BaseLayout
+  title={`Contact ${site.name}`}
+  description={`Call ${site.phone}, WhatsApp or send a quote request to ${site.name}. Fast replies for customers in ${site.areaServed.join(', ')}.`}
+  pageType="ContactPage"
+  breadcrumbs={[{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact/' }]}
+>
+  <section class="section">
+    <div class="wrap content-grid">
+      <div class="prose">
+        <h1>Contact us</h1>
+        <p>Tell us what you need and where. We usually reply within the hour.</p>
+        <p><strong>Phone:</strong> <a href={`tel:${site.phoneRaw}`} data-loc="contact">{site.phone}</a></p>
+        {site.whatsapp && <p><strong>WhatsApp:</strong> <a href={whatsappUrl()} target="_blank" rel="noopener" data-loc="contact">Chat with us</a></p>}
+        {site.email && <p><strong>Email:</strong> <a href={`mailto:${site.email}`} data-loc="contact">{site.email}</a></p>}
+        <p><strong>Address:</strong> {a.street}, {a.city}</p>
+        {site.mapsUrl && <p><a href={site.mapsUrl} target="_blank" rel="noopener">Open in Google Maps</a></p>}
+      </div>
+      <LeadForm />
+    </div>
+  </section>
+</BaseLayout>
