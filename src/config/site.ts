@@ -61,8 +61,8 @@ export const site = {
 
   // ---- Brand -------------------------------------------------
   brand: {
-    primary: '#3A1F0F', // dark colour: header, footer, headings
-    accent: '#F5A623', // highlight colour: buttons and links
+    primary: '#22160E', // dark colour: header, footer, headings
+    accent: '#F59E0B', // highlight colour: buttons and links
   },
   /** Files inside the /public folder. */
   logo: '/images/logo.svg',

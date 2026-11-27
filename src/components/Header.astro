@@ -1,6 +1,7 @@
 ---
 import { site } from '../config/site';
 import { whatsappUrl } from '../lib/seo';
+import Icon from './Icon.astro';
 ---
 <header class="site-header">
   <div class="wrap header-row">
@@ -19,8 +20,8 @@ import { whatsappUrl } from '../lib/seo';
       </details>
     </nav>
     <div class="header-cta">
-      <a class="btn btn-ghost" href={`tel:${site.phoneRaw}`} data-loc="header">{site.phone}</a>
-      {site.whatsapp && <a class="btn btn-accent" href={whatsappUrl()} target="_blank" rel="noopener" data-loc="header">WhatsApp</a>}
+      <a class="btn btn-ghost btn-sm" href={`tel:${site.phoneRaw}`} data-loc="header"><Icon name="phone" size={18} />{site.phone}</a>
+      {site.whatsapp && <a class="btn btn-wa btn-sm" href={whatsappUrl()} target="_blank" rel="noopener" data-loc="header"><Icon name="whatsapp" size={18} />Book on WhatsApp</a>}
     </div>
   </div>
 </header>

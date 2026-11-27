@@ -6,8 +6,8 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Faq from '../components/Faq.astro';
-import CtaBand from '../components/CtaBand.astro';
 import LeadForm from '../components/LeadForm.astro';
+import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
 import { absUrl, whatsappUrl } from '../lib/seo';
 import { faqSchema } from '../lib/schema';
@@ -51,21 +51,34 @@ const offersSchema = {
   })),
 };
 
+const heroFacts = [
+  { icon: 'car', text: 'Free hotel pickup' },
+  { icon: 'wallet', text: 'Pay on the day' },
+  { icon: 'dinner', text: 'BBQ dinner + shows' },
+] as const;
+
+const strip = [
+  { icon: 'pin', title: 'Free pickup', text: 'Anywhere in Dubai' },
+  { icon: 'wallet', title: 'AED 0 to reserve', text: 'Pay cash or card on the day' },
+  { icon: 'clock', title: '6-hour evening', text: 'About 2:30 PM to 9:30 PM' },
+  { icon: 'chat', title: '24/7 on WhatsApp', text: 'Replies in minutes' },
+] as const;
+
 const timeline = [
-  ['2:15 - 3:00 PM', 'Pickup', 'Your driver collects you from your hotel or home anywhere in Dubai in a 4x4 Land Cruiser.'],
-  ['3:45 PM', 'Dune bashing', 'About 45 minutes of roller-coaster driving over the red dunes, as gentle or wild as your group wants.'],
-  ['5:30 PM', 'Sunset stop', 'Photos on top of the dunes as the sun goes down, then sandboarding (and quad biking if booked).'],
-  ['6:15 PM', 'Desert camp', 'Camel ride, henna, Arabic costume photos, shisha corner and unlimited soft drinks, tea and coffee.'],
-  ['7:30 PM', 'Dinner and shows', 'BBQ buffet with grilled meats, salads and vegetarian dishes while the tanura, belly dance and fire shows play.'],
+  ['2:15 - 3:00 PM', 'Hotel pickup', 'Your driver collects you anywhere in Dubai in a 4x4 Land Cruiser.'],
+  ['3:45 PM', 'Dune bashing', 'About 45 minutes over the red dunes, as gentle or wild as your group wants.'],
+  ['5:30 PM', 'Sunset stop', 'Photos on the dune tops, sandboarding, and quad biking if booked.'],
+  ['6:15 PM', 'Desert camp', 'Camel ride, henna, Arabic costume photos and unlimited soft drinks, tea and coffee.'],
+  ['7:30 PM', 'Dinner and shows', 'BBQ buffet with veg options while the tanura, belly dance and fire shows play.'],
   ['9:30 PM', 'Drop-off', 'Back at your hotel with a camera full of photos.'],
 ];
 
 const reasons = [
-  ['Book direct, pay on the day', 'No deposit and no card details online. Reserve on WhatsApp and pay cash or card on the tour day.'],
-  ['One clear price', 'The price you see includes pickup, dinner, drinks and shows. Nothing to pay at the camp unless you want extras.'],
-  ['Licensed desert drivers', 'Experienced drivers in well-kept Land Cruisers with seat belts and roll cages, fully insured.'],
-  ['Families welcome', 'Tell us who is coming and we keep the dune drive gentle for kids, grandparents or anyone who prefers it.'],
-];
+  { icon: 'wallet', title: 'Book now, pay on the day', text: 'No deposit and no card details online. Reserve on WhatsApp and pay cash or card on the tour day.' },
+  { icon: 'check', title: 'One clear price', text: 'Pickup, dinner, drinks and shows are all included. Nothing to pay at the camp unless you want extras.' },
+  { icon: 'shield', title: 'Licensed desert drivers', text: 'Experienced drivers in well-kept, insured Land Cruisers with seat belts and roll cages.' },
+  { icon: 'users', title: 'Families welcome', text: 'Tell us who is coming and we keep the dune drive gentle for kids and older guests.' },
+] as const;
 ---
 <BaseLayout
   title={h.seoTitle}
@@ -75,68 +88,83 @@ const reasons = [
   schema={[offersSchema, faqSchema(h.faqs)]}
   exactTitle
 >
-  <section class="hero hero-photo">
+  <!-- HERO -->
+  <section class="hero2">
     <Image
-      class="hero-bg"
+      class="hero2-bg"
       src={heroImg}
-      alt="Red sand dunes at sunset on an evening desert safari near Dubai"
+      alt="Land Cruiser driving over red sand dunes at sunset on an evening desert safari near Dubai"
       widths={[640, 1024, 1600]}
       sizes="100vw"
       loading="eager"
       fetchpriority="high"
     />
-    <div class="wrap hero-grid">
-      <div>
-        <p class="eyebrow">Evening desert safari · Free hotel pickup</p>
+    <div class="wrap hero2-grid">
+      <div class="hero2-copy">
+        <p class="pill"><Icon name="sun" size={16} /> Evening desert safari · Daily departures</p>
         <h1>{h.h1}</h1>
-        <p class="lead">{h.intro}</p>
-        <div class="btn-row">
-          <a class="btn btn-wa" href={whatsappUrl()} target="_blank" rel="noopener" data-loc="hero">Book on WhatsApp</a>
-          <a class="btn btn-light" href={`tel:${site.phoneRaw}`} data-loc="hero">Call now</a>
-          <a class="btn btn-ghost-light" href="#book">Book online</a>
-        </div>
-        <ul class="trust">{h.trustPoints.map((p) => <li>{p}</li>)}</ul>
-      </div>
-      <aside class="price-card" aria-label="Price summary">
-        <p class="from">From</p>
-        <p class="big-price">{aed(lowestPrice)}<span> per person</span></p>
-        <ul class="highlights">
-          <li>Dune bashing in a 4x4 Land Cruiser</li>
-          <li>Camel ride and sandboarding</li>
-          <li>BBQ dinner with live shows</li>
-          <li>Pickup and drop-off included</li>
+        <p class="hero2-lead">{h.intro}</p>
+        <ul class="hero2-facts">
+          {heroFacts.map((f) => <li><Icon name={f.icon} size={18} />{f.text}</li>)}
         </ul>
-        <a class="btn btn-accent btn-block" href="#packages">See all packages</a>
+        <div class="hero2-cta">
+          <a class="btn btn-wa btn-lg" href={whatsappUrl()} target="_blank" rel="noopener" data-loc="hero"><Icon name="whatsapp" />Book on WhatsApp</a>
+          <a class="btn btn-glass btn-lg" href="#packages">See prices <Icon name="arrow" size={18} /></a>
+        </div>
+      </div>
+      <aside class="hero2-card" aria-label="Price summary">
+        <div class="hero2-card-top">
+          <span class="muted-sm">Shared evening safari</span>
+          <p class="hero2-price"><small>from</small> {aed(lowestPrice)} <span>/ person</span></p>
+        </div>
+        <ul class="ticks">
+          <li><Icon name="check" size={16} />4x4 dune bashing with licensed driver</li>
+          <li><Icon name="check" size={16} />Camel ride, sandboarding and henna</li>
+          <li><Icon name="check" size={16} />BBQ dinner, drinks and 3 live shows</li>
+          <li><Icon name="check" size={16} />Hotel pickup and drop-off in Dubai</li>
+        </ul>
+        <a class="btn btn-accent btn-block" href="#book">Check availability</a>
+        <a class="hero2-call" href={`tel:${site.phoneRaw}`} data-loc="hero-card"><Icon name="phone" size={16} /> or call {site.phone}</a>
       </aside>
     </div>
   </section>
 
-  <section class="strip" aria-label="Why guests book with us">
-    <ul class="wrap strip-list">
-      <li><strong>Free</strong> pickup anywhere in Dubai</li>
-      <li><strong>AED 0</strong> to reserve</li>
-      <li><strong>6 hours</strong> of desert fun</li>
-      <li><strong>24/7</strong> WhatsApp support</li>
+  <!-- TRUST STRIP -->
+  <section class="wrap strip2" aria-label="Why guests book with us">
+    <ul>
+      {strip.map((s) => (
+        <li><span class="ico"><Icon name={s.icon} /></span><div><strong>{s.title}</strong><span>{s.text}</span></div></li>
+      ))}
     </ul>
   </section>
 
-  <section class="section" id="packages">
+  <!-- SHARED PACKAGES -->
+  <section class="section2" id="packages">
     <div class="wrap">
-      <h2>Desert safari packages and prices</h2>
-      <p class="section-lead">Shared safaris: you join other guests in a Land Cruiser (up to 6 per car). Prices are per person and include everything listed.</p>
-      <ul class="packages">
-        {sharingSafaris.map((t) => (
-          <li class="package">
-            {t.badge && <span class="badge">{t.badge}</span>}
-            {t.image && <Image src={t.image} alt={t.imageAlt ?? t.name} width={600} height={360} loading="lazy" />}
-            <div class="package-body">
+      <header class="sec-head">
+        <p class="eyebrow2">Shared desert safaris</p>
+        <h2>Desert safari packages and prices</h2>
+        <p>Join other guests in a Land Cruiser. Prices are <strong>per person</strong> and include pickup, dinner, drinks and shows.</p>
+      </header>
+      <ul class="pk-grid">
+        {sharingSafaris.map((t, i) => (
+          <li class:list={['pk', { 'pk-featured': i === 0 }]}>
+            <div class="pk-media">
+              {t.image && <Image src={t.image} alt={t.imageAlt ?? t.name} width={640} height={400} loading="lazy" />}
+              {t.badge && <span class="pk-badge">{t.badge}</span>}
+            </div>
+            <div class="pk-body">
               <h3>{t.name}</h3>
-              <p class="package-price">{aed(t.price)} <span>{t.unit}</span></p>
-              <p>{t.summary}</p>
-              <ul class="highlights">{t.includes.map((i) => <li>{i}</li>)}</ul>
-              <div class="package-cta">
-                <a class="btn btn-wa" href={whatsappUrl(bookMsg(t.name, t.price, t.unit))} target="_blank" rel="noopener" data-loc="package" data-tour={t.name} data-value={t.price}>Book on WhatsApp</a>
-                <a class="btn btn-ghost" href={`tel:${site.phoneRaw}`} data-loc="package" data-tour={t.name} data-value={t.price}>Call</a>
+              <p class="pk-meta"><Icon name="clock" size={16} /> 6 hours · Pickup 2:15 - 3:00 PM</p>
+              <div class="pk-price">
+                <span class="amount">{aed(t.price)}</span>
+                <span class="unit">per person</span>
+              </div>
+              <p class="pk-summary">{t.summary}</p>
+              <ul class="ticks">{t.includes.map((x) => <li><Icon name="check" size={16} />{x}</li>)}</ul>
+              <div class="pk-cta">
+                <a class="btn btn-wa" href={whatsappUrl(bookMsg(t.name, t.price, t.unit))} target="_blank" rel="noopener" data-loc="package" data-tour={t.name} data-value={t.price}><Icon name="whatsapp" size={18} />Book on WhatsApp</a>
+                <a class="btn btn-icon" href={`tel:${site.phoneRaw}`} aria-label={`Call to book ${t.name}`} data-loc="package" data-tour={t.name} data-value={t.price}><Icon name="phone" size={18} /></a>
               </div>
             </div>
           </li>
@@ -145,30 +173,33 @@ const reasons = [
     </div>
   </section>
 
-  <section class="section soft" id="private">
+  <!-- PRIVATE SAFARI -->
+  <section class="section2 sand" id="private">
     <div class="wrap">
-      <h2>Private desert safari in your own Land Cruiser</h2>
-      <p class="section-lead">The whole 4x4 and driver just for your group, with flexible pickup time. Prices are per vehicle, not per person.</p>
-      <div class="private-grid">
-        {privateSafaris.map((p) => (
-          <div class="private-card">
-            <h3>{p.group}</h3>
-            <ul class="tier-list">
-              {privateTiers.map((tier) => (
+      <header class="sec-head">
+        <p class="eyebrow2">Private 4x4 safaris</p>
+        <h2>Private desert safari in your own Land Cruiser</h2>
+        <p>The whole car and driver just for your group, with a pickup time that suits you. Prices are <strong>per car</strong>, not per person.</p>
+      </header>
+      <div class="pv-grid">
+        {privateTiers.map((tier) => (
+          <div class:list={['pv', { 'pv-dark': tier.key === 'vip' }]}>
+            {tier.badge && <span class="pv-badge">{tier.badge}</span>}
+            <h3>{tier.name}</h3>
+            <p class="pv-note">{tier.note}</p>
+            <ul class="pv-rows">
+              {privateSafaris.map((p) => (
                 <li>
-                  <div>
-                    <strong>{tier.name}</strong>
-                    <small>{tier.note}</small>
-                  </div>
+                  <span class="pv-group"><Icon name="users" size={18} />{p.group}</span>
                   <a
-                    class="tier-price"
-                    href={whatsappUrl(bookMsg(`${tier.name} for ${p.group}`, p[tier.key], 'per vehicle'))}
+                    class="pv-price"
+                    href={whatsappUrl(bookMsg(`${tier.name} for ${p.group}`, p[tier.key], 'per car'))}
                     target="_blank"
                     rel="noopener"
                     data-loc="private"
                     data-tour={`${tier.name} (${p.group})`}
                     data-value={p[tier.key]}
-                  >{aed(p[tier.key])}<span>Book →</span></a>
+                  ><strong>{aed(p[tier.key])}</strong><span>Book <Icon name="arrow" size={14} /></span></a>
                 </li>
               ))}
             </ul>
@@ -178,41 +209,61 @@ const reasons = [
     </div>
   </section>
 
-  <section class="section" id="included">
-    <div class="wrap two-col">
-      <div>
+  <!-- INCLUDED + TIMELINE -->
+  <section class="section2" id="included">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow2">No hidden extras</p>
         <h2>Included in every desert safari</h2>
-        <ul class="highlights included">{includedInEverySafari.map((i) => <li>{i}</li>)}</ul>
-        <p class="muted">Optional extras at the camp: longer quad bike or dune buggy rides, shisha and alcoholic drinks.</p>
-      </div>
-      <div>
-        <h2>Your evening, hour by hour</h2>
-        <p class="muted">Winter times shown. From May to September everything runs about an hour later to catch the sunset.</p>
-        <ol class="timeline">
-          {timeline.map(([time, title, text]) => (
-            <li><span class="time">{time}</span><strong>{title}</strong><p>{text}</p></li>
-          ))}
-        </ol>
-      </div>
+      </header>
+      <ul class="inc-grid">
+        {includedInEverySafari.map((x) => <li><span class="ico-sm"><Icon name="check" size={16} /></span>{x}</li>)}
+      </ul>
+      <p class="fine">Optional extras at the camp: longer quad bike or dune buggy rides, shisha and alcoholic drinks.</p>
     </div>
   </section>
 
-  <section class="section soft" id="city-tours">
+  <section class="section2 night" aria-labelledby="timeline-h">
+    <div class="wrap tl-wrap">
+      <header class="sec-head">
+        <p class="eyebrow2">Your evening</p>
+        <h2 id="timeline-h">Hour by hour</h2>
+        <p>Winter times shown. From May to September everything runs about an hour later to catch the sunset.</p>
+      </header>
+      <ol class="tl">
+        {timeline.map(([time, title, text]) => (
+          <li><span class="tl-time">{time}</span><h3>{title}</h3><p>{text}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- CITY TOURS -->
+  <section class="section2" id="city-tours">
     <div class="wrap">
-      <h2>Private Dubai and Abu Dhabi city tours</h2>
-      <p class="section-lead">Your own car, driver and guide with hotel pickup. One price per car for the whole group.</p>
-      <ul class="packages">
+      <header class="sec-head">
+        <p class="eyebrow2">Private city tours</p>
+        <h2>Dubai and Abu Dhabi city tours</h2>
+        <p>Your own car, driver and guide with hotel pickup. <strong>One price per car</strong> for the whole group.</p>
+      </header>
+      <ul class="pk-grid">
         {cityTours.map((t) => (
-          <li class="package">
-            {t.badge && <span class="badge">{t.badge}</span>}
-            <div class="package-body">
+          <li class="pk">
+            <div class="pk-media">
+              {t.image && <Image src={t.image} alt={t.imageAlt ?? t.name} width={640} height={400} loading="lazy" />}
+              {t.badge && <span class="pk-badge">{t.badge}</span>}
+            </div>
+            <div class="pk-body">
               <h3>{t.name}</h3>
-              <p class="package-price">{aed(t.price)} <span>{t.unit}</span></p>
-              <p>{t.summary}</p>
-              <ul class="highlights">{t.includes.map((i) => <li>{i}</li>)}</ul>
-              <div class="package-cta">
-                <a class="btn btn-wa" href={whatsappUrl(bookMsg(t.name, t.price, t.unit))} target="_blank" rel="noopener" data-loc="city-tour" data-tour={t.name} data-value={t.price}>Book on WhatsApp</a>
-                <a class="btn btn-ghost" href={`tel:${site.phoneRaw}`} data-loc="city-tour" data-tour={t.name} data-value={t.price}>Call</a>
+              <div class="pk-price">
+                <span class="amount">{aed(t.price)}</span>
+                <span class="unit">per car</span>
+              </div>
+              <p class="pk-summary">{t.summary}</p>
+              <ul class="ticks">{t.includes.map((x) => <li><Icon name="check" size={16} />{x}</li>)}</ul>
+              <div class="pk-cta">
+                <a class="btn btn-wa" href={whatsappUrl(bookMsg(t.name, t.price, 'per car'))} target="_blank" rel="noopener" data-loc="city-tour" data-tour={t.name} data-value={t.price}><Icon name="whatsapp" size={18} />Book on WhatsApp</a>
+                <a class="btn btn-icon" href={`tel:${site.phoneRaw}`} aria-label={`Call to book ${t.name}`} data-loc="city-tour" data-tour={t.name} data-value={t.price}><Icon name="phone" size={18} /></a>
               </div>
             </div>
           </li>
@@ -221,43 +272,57 @@ const reasons = [
     </div>
   </section>
 
-  <section class="section">
+  <!-- WHY US -->
+  <section class="section2 sand">
     <div class="wrap">
-      <h2>Why book directly with us</h2>
-      <ul class="reasons">
-        {reasons.map(([title, text]) => <li><h3>{title}</h3><p>{text}</p></li>)}
+      <header class="sec-head center">
+        <p class="eyebrow2">Book direct</p>
+        <h2>Why guests book with us</h2>
+      </header>
+      <ul class="why-grid">
+        {reasons.map((r) => <li><span class="ico"><Icon name={r.icon} /></span><h3>{r.title}</h3><p>{r.text}</p></li>)}
       </ul>
     </div>
   </section>
 
-  <section class="section soft" id="book">
-    <div class="wrap content-grid book-grid">
-      <div class="prose">
-        <h2>Book your desert safari now</h2>
-        <p>Send the form and we reply on WhatsApp, usually within a few minutes, to confirm your pickup time. Prefer to talk? Call <a href={`tel:${site.phoneRaw}`} data-loc="book">{site.phone}</a> or <a href={whatsappUrl()} target="_blank" rel="noopener" data-loc="book">message us on WhatsApp</a>.</p>
-        <h3>What happens next</h3>
-        <ol>
-          <li>We confirm your seats and pickup time on WhatsApp.</li>
-          <li>Your driver messages you on the day before arriving.</li>
-          <li>Enjoy the desert and pay in cash or by card on the day.</li>
+  <!-- BOOKING -->
+  <section class="section2" id="book">
+    <div class="wrap book-grid2">
+      <div class="book-copy">
+        <p class="eyebrow2">Reserve in 2 minutes</p>
+        <h2>Book your desert safari</h2>
+        <p>Send the form and we confirm your pickup time on WhatsApp, usually within minutes. Prefer to talk? <a href={`tel:${site.phoneRaw}`} data-loc="book">Call {site.phone}</a>.</p>
+        <ol class="steps">
+          <li><span>1</span><div><strong>Send your request</strong><p>Choose your tour, date and number of guests.</p></div></li>
+          <li><span>2</span><div><strong>Get confirmation</strong><p>We reply on WhatsApp with your pickup time.</p></div></li>
+          <li><span>3</span><div><strong>Enjoy and pay on the day</strong><p>Cash or card. Free cancellation up to 24 hours before pickup.</p></div></li>
         </ol>
-        <h3>Good to know</h3>
-        <ul>
-          <li>Wear comfortable clothes and closed shoes; bring sunglasses and a light jacket in winter.</li>
-          <li>Dune bashing is not recommended for pregnant guests, babies under 3 or anyone with back or heart problems. Tell us and we will skip it.</li>
-          <li>Safaris run every day of the year. Morning and overnight safaris are available on request.</li>
-          <li>Free cancellation up to 24 hours before pickup.</li>
-        </ul>
+        <div class="note-box">
+          <strong>Good to know</strong>
+          <ul>
+            <li>Wear comfortable clothes and closed shoes; bring sunglasses and a light jacket in winter.</li>
+            <li>Dune bashing is not advised for pregnant guests, babies under 3 or anyone with back or heart problems. Tell us and we will skip it.</li>
+            <li>Safaris run every day. Morning and overnight safaris on request.</li>
+          </ul>
+        </div>
       </div>
-      <div class="sticky"><LeadForm /></div>
+      <div class="book-form"><LeadForm /></div>
     </div>
   </section>
 
-  <Faq faqs={h.faqs} />
+  <div class="sand"><Faq faqs={h.faqs} /></div>
 
-  <CtaBand
-    heading="Weekend seats fill up fast"
-    text="Reserve today for free and pay on the day of your safari."
-    message={site.whatsappMessage}
-  />
+  <!-- FINAL CTA -->
+  <section class="cta2">
+    <div class="wrap cta2-inner">
+      <div>
+        <h2>Weekend seats fill up fast</h2>
+        <p>Reserve today for free and pay on the day of your safari.</p>
+      </div>
+      <div class="cta2-btns">
+        <a class="btn btn-wa btn-lg" href={whatsappUrl()} target="_blank" rel="noopener" data-loc="cta-band"><Icon name="whatsapp" />WhatsApp us</a>
+        <a class="btn btn-dark btn-lg" href={`tel:${site.phoneRaw}`} data-loc="cta-band"><Icon name="phone" />Call now</a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

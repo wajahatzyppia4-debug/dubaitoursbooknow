@@ -11,6 +11,8 @@ import sharingImg from '../assets/images/evening-desert-safari-sharing.jpg';
 import vipImg from '../assets/images/vip-desert-camp-dubai.jpg';
 import privateImg from '../assets/images/private-land-cruiser-safari.jpg';
 import cityImg from '../assets/images/dubai-city-tour.jpg';
+import oldDubaiImg from '../assets/images/old-dubai-heritage-tour.jpg';
+import abuDhabiImg from '../assets/images/abu-dhabi-city-tour.jpg';
 
 export type Tour = {
   id: string;
@@ -90,9 +92,9 @@ export const privateSafaris = [
 ] as const;
 
 export const privateTiers = [
-  { key: 'standard', name: 'Private Safari', note: 'Dune bashing, camel ride, sandboarding, BBQ dinner and shows' },
-  { key: 'quad', name: 'Private Safari + Quad Bike', note: 'Everything in the private safari plus ATV quad bike rides' },
-  { key: 'vip', name: 'Private VIP Safari + Quad Bike', note: 'Quad bikes, VIP seating and table service at the camp' },
+  { key: 'standard', name: 'Private Safari', note: 'Dune bashing, camel ride, sandboarding, BBQ dinner and shows', badge: '' },
+  { key: 'quad', name: 'Private Safari + Quad Bike', note: 'Everything in the private safari plus ATV quad bike rides', badge: 'Adventure' },
+  { key: 'vip', name: 'Private VIP Safari + Quad Bike', note: 'Quad bikes, VIP seating and table service at the camp', badge: 'Premium' },
 ] as const;
 
 /** Private city tours with driver and guide. Prices per car. */
@@ -110,6 +112,8 @@ export const cityTours: Tour[] = [
       'Arabian tea house stop',
       'Private car, driver and guide with hotel pickup',
     ],
+    image: oldDubaiImg,
+    imageAlt: 'Wind towers of Al Fahidi and an abra boat on Dubai Creek',
   },
   {
     id: 'modern-dubai-tour',
@@ -125,6 +129,8 @@ export const cityTours: Tour[] = [
       'Old souks and Dubai Creek',
       'Private car, driver and guide with hotel pickup',
     ],
+    image: cityImg,
+    imageAlt: 'Downtown Dubai skyline with Burj Khalifa at dusk',
   },
   {
     id: 'abu-dhabi-city-tour',
@@ -139,6 +145,8 @@ export const cityTours: Tour[] = [
       'Heritage Village and Corniche drive',
       'Private car, driver and guide with pickup in Dubai',
     ],
+    image: abuDhabiImg,
+    imageAlt: 'Sheikh Zayed Grand Mosque in Abu Dhabi at sunset',
   },
 ];
 
